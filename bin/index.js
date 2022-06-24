@@ -30,7 +30,7 @@ const options = [
   }, {
     type: 'input',
     name: 'username',
-    value: root,
+    value: 'root',
     message: '请输入账号'
   }, {
     type: 'input',
