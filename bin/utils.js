@@ -1,5 +1,7 @@
 const path = require('path')
 const fs = require('fs')
+const chalk = require('chalk')
+
 const fileToObj = (filePath) => {
   filePath = path.resolve(__dirname, filePath)
   const fileData = fs.readFileSync(filePath).toString()
@@ -24,6 +26,11 @@ const checkFile = () => {
 }
 
 const getFileList = (source) => {
+  const existFile = fs.existsSync(source)
+  if(!existFile){
+    console.log(chalk.red(`没有找到该目录: ${source}`))
+    return false
+  }
   const currentPath = `${process.cwd()}/${source}`
   const fileNames = fs.readdirSync(currentPath)
   const result = []

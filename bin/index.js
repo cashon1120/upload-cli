@@ -15,7 +15,7 @@ program
   .option('d, delete', '删除项目')
   .option('up, update', '更新项目配置信息')
   .option('detail', '查看项目详情')
-  .option('p, push ?-bundleName', '上传包')
+  .option('p, push -list|-ls', '上传包')
 
 const options = [
   {
@@ -25,10 +25,12 @@ const options = [
   }, {
     type: 'input',
     name: 'port',
+    value: 22,
     message: '请输入端口号'
   }, {
     type: 'input',
     name: 'username',
+    value: root,
     message: '请输入账号'
   }, {
     type: 'input',
@@ -87,11 +89,7 @@ async function getUserInput(index, isUpdate = false) {
     }
     projectMap[settingParams.projectName] = settingParams
     objToFile(projectMap, './data.json')
-    if (projectName) {
-      console.log(chalk.green(`修改成功`))
-    } else {
-      console.log(chalk.green(`设置成功`))
-    }
+    console.log(chalk.green(`设置成功`))
   }
 }
 
@@ -167,21 +165,27 @@ program
 program
   .command('push')
   .alias('p')
-  .action(async() => {
+  .option('-list, -ls', '是否选择列表上传')
+  .action(async(cmdObj) => {
     const projectName = process.cwd()
     if (projectMap[projectName]) {
       const {source} = projectMap[projectName]
-      const list = getFileList(source)
-      if (!list || list.length === 0) {
-        console.log(chalk.red('../dist 目录下还没有打包文件, 请先打包'))
-      } else {
-        inquirer
-        .prompt({type: 'list', message: '请选择打包文件:', name: 'bundleName', choices: getFileList(source)})
-        .then((result) => {
-          const {bundleName} = result
-          uploadFileToServer(`${process.cwd()}/dist/${bundleName}`, projectMap[projectName])
-        })
+      if(cmdObj.List || cmdObj.Ls){
+        const list = getFileList(source)
+        if (!list || list.length === 0) {
+          console.log(chalk.red('../dist 目录下还没有打包文件, 请先打包'))
+        } else {
+          inquirer
+          .prompt({type: 'list', message: '请选择打包文件:', name: 'bundleName', choices: getFileList(source)})
+          .then((result) => {
+            const {bundleName} = result
+            uploadFileToServer(`${process.cwd()}/${source}/${bundleName}`, projectMap[projectName])
+          })
+        }
+      }else{
+        uploadFileToServer(`${process.cwd()}/${source}`, projectMap[projectName])
       }
+      
     } else {
       console.log(chalk.yellow(`没有该项目 "${projectName}" 目配置信息`))
     }

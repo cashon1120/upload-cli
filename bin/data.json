@@ -1,0 +1,11 @@
+{
+  "/Volumes/data/cashon/upload-cli": {
+    "host": "123",
+    "port": "22",
+    "username": "cashon",
+    "password": "123456",
+    "source": "dist",
+    "target": "user/www/web",
+    "projectName": "/Volumes/data/cashon/upload-cli"
+  }
+}

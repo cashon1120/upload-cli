@@ -1,9 +1,15 @@
 
 const SftpClient = require('ssh2-sftp-client')
+const fs = require('fs')
 const chalk = require('chalk');
 
 async function uploadFileToServer(src, uploadParams) {
   const {host, port, username, password, source, target} = uploadParams
+  const existFile = fs.existsSync(src)
+  if(!existFile){
+    console.log(chalk.red('没有找到打包目录'))
+    return 
+  }
   const client = new SftpClient();
   try {
     await client.connect({
