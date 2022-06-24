@@ -2,11 +2,25 @@ const path = require('path')
 const fs = require('fs')
 const fileToObj = (filePath) => {
   filePath = path.resolve(__dirname, filePath)
-  return JSON.parse(fs.readFileSync(filePath).toString())
+  const fileData = fs.readFileSync(filePath).toString()
+  if(!fileData){
+    return {}
+  }
+  return JSON.parse(fileData)
 }
 
 const objToFile = (data, filePath) => {
   fs.writeFileSync(path.resolve(__dirname, filePath), JSON.stringify(data))
+}
+
+const checkFile = () => {
+  const dataFilePath = path.join(__dirname, 'data.json')
+  const res = fs.existsSync(dataFilePath)
+  if(res){
+    return dataFilePath
+  }
+  fs.writeFileSync(dataFilePath, '')
+  return dataFilePath
 }
 
 const getFileList = (source) => {
@@ -26,5 +40,6 @@ const getFileList = (source) => {
 module.exports = {
   fileToObj,
   objToFile,
+  checkFile,
   getFileList
 }

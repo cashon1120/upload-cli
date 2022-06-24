@@ -1,5 +1,5 @@
 {
-  "name": "uploadcli",
+  "name": "@cashon/uploadcli",
   "version": "1.0.0",
   "description": "",
   "bin": {

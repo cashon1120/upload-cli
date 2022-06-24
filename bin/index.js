@@ -5,8 +5,8 @@ const {Command} = require('commander'); //命令行工具
 const inquirer = require('inquirer'); //命令行交互
 const {uploadFileToServer} = require('./uploadFile')
 const {version} = require('../package.json');
-const {fileToObj, objToFile, getFileList} = require('./utils')
-const projectMap = fileToObj('./data.json')
+const {fileToObj, objToFile, getFileList, checkFile} = require('./utils')
+const projectMap = fileToObj(checkFile())
 const program = new Command();
 
 program
@@ -107,10 +107,11 @@ program
   .command('list')
   .alias('ls')
   .action(() => {
+    console.log(`项目列表(共${Object.keys(projectMap).length}个)`)
     Object
       .keys(projectMap)
       .forEach((key) => {
-        console.log(key)
+        console.log('* ', chalk.green(key))
       })
   })
 
@@ -118,14 +119,22 @@ program
   .command('delete')
   .alias('d')
   .action(async() => {
-    const projectName = process.cwd()
-    if (projectMap[projectName]) {
-      delete projectMap[projectName]
-      objToFile(projectMap, './data.json')
-      console.log(chalk.green(`删除成功`))
-    } else {
-      console.log(chalk.yellow(`没有该项目 "${projectName}" 目配置信息`))
-    }
+    const projectList = []
+    Object.keys(projectMap).forEach((key) => {
+      projectList.push({name: key})
+    })
+    inquirer
+        .prompt({type: 'list', message: '请选择要删除的项目路径:', name: 'projectName', choices: projectList})
+        .then((result) => {
+          const {projectName} = result
+          if (projectMap[projectName]) {
+            delete projectMap[projectName]
+            objToFile(projectMap, './data.json')
+            console.log(chalk.green(`删除成功`))
+          } else {
+            console.log(chalk.yellow(`没有该项目 "${projectName}" 目配置信息`))
+          }
+        })
   })
 
 program
