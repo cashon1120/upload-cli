@@ -1,12 +1,13 @@
 {
   "name": "@cashon/uploadcli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "bin": {
     "uploadcli": "bin/index.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cashon1120/upload-cli"
   },
   "keywords": ["upload", "ssh"],
   "author": "",
